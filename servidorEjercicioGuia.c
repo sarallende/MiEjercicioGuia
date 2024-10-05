@@ -5,8 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <stdio.h>
-
-
+#include <ctype.h> // lo usaremos para las mayusculas y minusculas
 
 int main(int argc, char *argv[])
 {
@@ -57,8 +56,6 @@ int main(int argc, char *argv[])
 			// Tenemos que a?adirle la marca de fin de string 
 			// para que no escriba lo que hay despues en el buffer
 			peticion[ret]='\0';
-			
-			
 			printf ("Peticion: %s\n",peticion);
 			
 			// vamos a ver que quieren
@@ -70,12 +67,11 @@ int main(int argc, char *argv[])
 			if (codigo !=0)
 			{
 				p = strtok( NULL, "/");
-
+				
 				strcpy (nombre, p);
 				// Ya tenemos el nombre
 				printf ("Codigo: %d, Nombre: %s\n", codigo, nombre);
 			}
-			
 			if (codigo ==0) //petici?n de desconexi?n
 				terminar=1;
 			else if (codigo ==1) //piden la longitd del nombre
@@ -86,8 +82,37 @@ int main(int argc, char *argv[])
 				strcpy (respuesta,"SI");
 				else
 					strcpy (respuesta,"NO");
-			else //quiere saber si es alto
-			{
+			else if (codigo == 4){
+				//quiere saber si su nombre es palindromo
+				int es_palindromo = 1;
+				int len = strlen(nombre);
+				// Convertimos todo a minusculas para ignorar mayusculas/minusculas
+				for (i = 0; i < len; i++)
+					nombre[i] = tolower(nombre[i]);
+				for (int i = 0; i< len/2; i++)
+				{
+					if (nombre[i] != nombre[strlen(nombre) -i -1])
+					{
+						es_palindromo = 0;
+						break;
+					}
+				}
+				if (es_palindromo)
+					strcpy(respuesta, "SI");
+				else
+					strcpy(respuesta, "NO");
+			}
+			else if (codigo==5){
+				//quiere su nombre en mayusculas
+				int len = strlen(nombre);
+				for (i = 0; i < len; i++)
+				{
+					nombre[i] = toupper(nombre[i]); // Convertimos a mayusculas el nombre que hemos recibido del cliente
+				}
+				strcpy(respuesta, nombre); 
+			}
+			else {
+				//quiere saber si es alto
 				p = strtok( NULL, "/");
 				float altura =  atof (p);
 				if (altura > 1.70)
@@ -95,7 +120,6 @@ int main(int argc, char *argv[])
 				else
 					sprintf (respuesta, "%s: eresbajo",nombre);
 			}
-				
 			if (codigo !=0)
 			{
 				
