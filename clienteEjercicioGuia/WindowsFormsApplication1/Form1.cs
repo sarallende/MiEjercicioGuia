@@ -176,5 +176,10 @@ namespace WindowsFormsApplication1
         {
 
         }
+
+        private void nombre_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }
